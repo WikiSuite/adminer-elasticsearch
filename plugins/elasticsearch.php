@@ -108,11 +108,14 @@ class AdminerElasticsearch {
             return $e->getMessage();
         }
 
-        if (! $authenticated)
+        if (!$authenticated)
             return FALSE;
 
         // Authorization
         //--------------
+
+        if ($login === 'root')
+            return TRUE;
 
         try {
             $group = Group_Factory::create('elasticsearch_plugin');
@@ -121,7 +124,7 @@ class AdminerElasticsearch {
             return $e->getMessage();
         }
 
-        if (($login === 'root') || (in_array($login, $members)))
+        if (in_array($login, $members))
             return TRUE;
         else
             return 'Not authorized';
