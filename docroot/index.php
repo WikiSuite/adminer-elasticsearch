@@ -1,6 +1,6 @@
 <?php
 function adminer_object() {
-    include_once "./plugins/plugin.php";
+    include_once "../plugins/plugin.php";
     
     foreach (glob("../plugins/*.php") as $filename) {
         include_once "./$filename";
@@ -13,5 +13,8 @@ function adminer_object() {
     return new AdminerPlugin($plugins);
 }
 
+session_save_path('/var/lib/webconfig/session');
+
 include "../adminer-4.3.0.php";
+
 ?>
