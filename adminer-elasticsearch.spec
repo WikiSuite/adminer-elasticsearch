@@ -1,13 +1,13 @@
-Name:		adminer-elasticsearch
-Version:	4.3.0
-Release:	1%{?dist}
-Summary:	Adminer Elasticsearch
-BuildRoot:	%{_topdir}/BUILD/%{name}-%{version}-%{release}
-BuildArch:	noarch
-Group:		System Environment/Base
-License:	GPL2/Apache License
-Source0:	%{name}-%{version}.tar.gz
-Requires:	app-base-core
+Name:       adminer-elasticsearch
+Version:    4.3.0
+Release:    1%{?dist}
+Summary:    Adminer Elasticsearch
+BuildRoot:  %{_topdir}/BUILD/%{name}-%{version}-%{release}
+BuildArch:  noarch
+Group:      System Environment/Base
+License:    GPL2/Apache License
+Source0:    %{name}-%{version}.tar.gz
+Requires:   app-base-core
 
 %description
 Adminer configured to connect to local Elasticsearch system.
