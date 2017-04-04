@@ -9,6 +9,7 @@ License:    GPL2/Apache License
 Source0:    %{name}-%{version}.tar.gz
 Requires:   app-base-core
 Requires:   app-elasticsearch-core
+Requires:   app-elasticsearch-plugin-core
 
 %description
 Adminer configured to connect to local Elasticsearch system.
