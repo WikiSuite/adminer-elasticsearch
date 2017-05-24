@@ -15,6 +15,6 @@ function adminer_object() {
 
 session_save_path('/var/lib/webconfig/session');
 
-include "../adminer-4.3.0.php";
+include "../adminer.php";
 
 ?>

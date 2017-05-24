@@ -28,13 +28,12 @@ Adminer configured to connect to local Elasticsearch system.
 ./compile.php
 
 %install
-mkdir -p $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch
 mkdir -p $RPM_BUILD_ROOT/usr/clearos/sandbox/etc/httpd/conf.d
 mkdir -p $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/docroot
 mkdir -p $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/plugins
 
 install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/usr/clearos/sandbox/etc/httpd/conf.d
-install -m 0644 adminer-%{version}.php $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/
+install -m 0644 adminer-%{version}.php $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/adminer.php
 
 install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/docroot/adminer.css
 install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/docroot/index.php
@@ -47,11 +46,14 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %attr(-,root,root)
 %dir /usr/share/adminer-elasticsearch
-/usr/share/adminer-elasticsearch/adminer-%{version}.php
+/usr/share/adminer-elasticsearch/adminer.php
 /usr/share/adminer-elasticsearch/docroot
 /usr/share/adminer-elasticsearch/plugins
 /usr/clearos/sandbox/etc/httpd/conf.d/adminer-elasticsearch.conf
 
 %changelog
+* Tue May 23 2017 eGloo <developer@egloo.ca> 4.3.1
+- 4.3.1 with patch for ElasticSearch 5.4
+
 * Mon Apr 03 2017 eGloo <developer@egloo.ca> 4.3.0
 - First build
