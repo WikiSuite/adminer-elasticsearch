@@ -11,6 +11,7 @@ Source1:    adminer-elasticsearch.conf
 Source2:    adminer.css
 Source3:    adminer-index.php
 Source4:    adminer-elasticsearch.php
+Patch0:     adminer-4.3.1-elasticsearch54.patch
 Requires:   app-base-core
 Requires:   app-elasticsearch-core
 Requires:   app-elasticsearch-plugin-core
@@ -21,6 +22,7 @@ Adminer configured to connect to local Elasticsearch system.
 
 %prep
 %setup -q -n adminer-%{version}
+%patch0 -p1
 
 %build
 ./compile.php

@@ -1,0 +1,11 @@
+diff -rup adminer-4.3.1/adminer/drivers/elastic.inc.php adminer-4.3.1-elasticsearch54/adminer/drivers/elastic.inc.php
+--- adminer-4.3.1/adminer/drivers/elastic.inc.php	2017-04-14 03:48:11.000000000 -0400
++++ adminer-4.3.1-elasticsearch54/adminer/drivers/elastic.inc.php	2017-05-23 20:47:49.406745590 -0400
+@@ -20,6 +20,7 @@ if (isset($_GET["elastic"])) {
+ 				$file = @file_get_contents($this->_url  . '/' . ltrim($path, '/'), false, stream_context_create(array('http' => array(
+ 					'method' => $method,
+ 					'content' => json_encode($content),
++					'header' => 'Content-type:application/json',
+ 					'ignore_errors' => 1, // available since PHP 5.2.10
+ 				))));
+ 				if (!$file) {
