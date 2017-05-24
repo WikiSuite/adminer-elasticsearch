@@ -6,37 +6,46 @@ BuildRoot:  %{_topdir}/BUILD/%{name}-%{version}-%{release}
 BuildArch:  noarch
 Group:      System Environment/Base
 License:    GPL2/Apache License
-Source0:    %{name}-%{version}.tar.gz
+Source0:    adminer-%{version}.tar.gz
+Source1:    adminer-elasticsearch.conf
+Source2:    adminer.css
+Source3:    adminer-index.php
+Source4:    adminer-elasticsearch.php
 Requires:   app-base-core
 Requires:   app-elasticsearch-core
 Requires:   app-elasticsearch-plugin-core
+BuildRequires: php-cli
 
 %description
 Adminer configured to connect to local Elasticsearch system.
 
 %prep
-%setup -q
+%setup -q -n adminer-%{version}
 
 %build
+./compile.php
 
 %install
 mkdir -p $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch
 mkdir -p $RPM_BUILD_ROOT/usr/clearos/sandbox/etc/httpd/conf.d
+mkdir -p $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/docroot
+mkdir -p $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/plugins
 
-install -m 0644 adminer-elasticsearch.conf $RPM_BUILD_ROOT/usr/clearos/sandbox/etc/httpd/conf.d
-install -m 0644 adminer-4.3.0.php $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/
+install -m 0644 %{SOURCE1} $RPM_BUILD_ROOT/usr/clearos/sandbox/etc/httpd/conf.d
+install -m 0644 adminer-%{version}.php $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/
 
-cp -av docroot $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/
-cp -av plugins $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/
+install -m 0644 %{SOURCE2} $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/docroot/adminer.css
+install -m 0644 %{SOURCE3} $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/docroot/index.php
+install -m 0644 %{SOURCE4} $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/plugins/elasticsearch.php
+install -m 0644 plugins/plugin.php $RPM_BUILD_ROOT/usr/share/adminer-elasticsearch/plugins/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %attr(-,root,root)
-%doc gpl-2.0.txt LICENSE-2.0.txt
 %dir /usr/share/adminer-elasticsearch
-/usr/share/adminer-elasticsearch/adminer-4.3.0.php
+/usr/share/adminer-elasticsearch/adminer-%{version}.php
 /usr/share/adminer-elasticsearch/docroot
 /usr/share/adminer-elasticsearch/plugins
 /usr/clearos/sandbox/etc/httpd/conf.d/adminer-elasticsearch.conf
