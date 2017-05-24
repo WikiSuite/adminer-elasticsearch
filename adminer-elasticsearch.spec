@@ -1,5 +1,5 @@
 Name:       adminer-elasticsearch
-Version:    4.3.0
+Version:    4.3.1
 Release:    1%{?dist}
 Summary:    Adminer Elasticsearch
 BuildRoot:  %{_topdir}/BUILD/%{name}-%{version}-%{release}
