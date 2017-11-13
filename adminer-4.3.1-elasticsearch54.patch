@@ -1,6 +1,6 @@
 diff -rup adminer-4.3.1/adminer/drivers/elastic.inc.php adminer-4.3.1-elasticsearch54/adminer/drivers/elastic.inc.php
---- adminer-4.3.1/adminer/drivers/elastic.inc.php	2017-04-14 03:48:11.000000000 -0400
-+++ adminer-4.3.1-elasticsearch54/adminer/drivers/elastic.inc.php	2017-05-23 20:47:49.406745590 -0400
+--- adminer-4.3.1/adminer/drivers/elastic.inc.php	2017-11-13 10:00:30.380883318 -0200
++++ adminer-4.3.1-elasticsearch54/adminer/drivers/elastic.inc.php	2017-11-13 09:53:47.427488962 -0200
 @@ -20,6 +20,7 @@ if (isset($_GET["elastic"])) {
  				$file = @file_get_contents($this->_url  . '/' . ltrim($path, '/'), false, stream_context_create(array('http' => array(
  					'method' => $method,
@@ -9,3 +9,108 @@ diff -rup adminer-4.3.1/adminer/drivers/elastic.inc.php adminer-4.3.1-elasticsea
  					'ignore_errors' => 1, // available since PHP 5.2.10
  				))));
  				if (!$file) {
+@@ -108,6 +109,7 @@ if (isset($_GET["elastic"])) {
+ 
+ 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+ 			global $adminer;
++
+ 			$data = array();
+ 			$query = "$table/_search";
+ 			if ($select != array("*")) {
+@@ -176,6 +178,55 @@ if (isset($_GET["elastic"])) {
+ 			return new Min_Result($return);
+ 		}
+ 
++		function update($type, $record, $queryWhere) {
++			$parts = preg_split('/ *= */', $queryWhere);
++
++			if (count($parts) === 2) {
++				$id = trim($parts[1]);
++				$query = "{$type}/{$id}";
++				return $this->_conn->query($query, $record, 'POST');
++			}
++
++			return false;
++		}
++
++		function insert($type, $record) {
++			$id = ""; // TODO: User should be able to inform _id
++
++			$query = "{$type}/{$id}";
++			$response = $this->_conn->query($query, $record, 'POST');
++			$this->_conn->last_id = $response['_id'];
++			return $response['created'];
++		}
++
++		function delete($type, $queryWhere) {
++			$ids = array();
++
++			if (is_array($_GET["where"]) && !empty($_GET["where"]["_id"])) {
++				$ids[] = $_GET["where"]["_id"];
++			}
++
++			if (is_array($_POST['check'])) {
++				foreach ($_POST['check'] as $check) {
++					$parts = preg_split('/ *= */', $check);
++					if (count($parts) === 2) {
++						$ids[] = trim($parts[1]);
++					}
++				}
++			}
++
++			$this->_conn->affected_rows = 0;
++			foreach ($ids as $id) {
++				$query = "{$type}/{$id}";
++				$response = $this->_conn->query($query, '{}', 'DELETE');
++
++				if (is_array($response) && $response['found'] == true) {
++					$this->_conn->affected_rows++;
++				}
++			}
++
++			return $this->_conn->affected_rows;
++		}
+ 	}
+ 
+ 
+@@ -242,7 +293,7 @@ if (isset($_GET["elastic"])) {
+ 	function table_status($name = "", $fast = false) {
+ 		global $connection;
+ 		$search = $connection->query("_search?search_type=count", array(
+-			"facets" => array(
++			"aggregations" => array(
+ 				"count_by_type" => array(
+ 					"terms" => array(
+ 						"field" => "_type",
+@@ -252,13 +303,14 @@ if (isset($_GET["elastic"])) {
+ 		), "POST");
+ 		$return = array();
+ 		if ($search) {
+-			foreach ($search["facets"]["count_by_type"]["terms"] as $table) {
+-				$return[$table["term"]] = array(
+-					"Name" => $table["term"],
++			$tables = $search["aggregations"]["count_by_type"]["buckets"];
++			foreach ( $tables as $table) {
++				$return[$table["key"]] = array(
++					"Name" => $table["key"],
+ 					"Engine" => "table",
+-					"Rows" => $table["count"],
++					"Rows" => $table["doc_count"],
+ 				);
+-				if ($name != "" && $name == $table["term"]) {
++				if ($name != "" && $name == $table["key"]) {
+ 					return $return[$name];
+ 				}
+ 			}
+@@ -367,6 +419,11 @@ if (isset($_GET["elastic"])) {
+ 		return $return;
+ 	}
+ 
++	function last_id() {
++		global $connection;
++		return $connection->last_id;
++	}
++
+ 	$jush = "elastic";
+ 	$operators = array("=", "query");
+ 	$functions = array();
