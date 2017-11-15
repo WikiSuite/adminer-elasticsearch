@@ -26,7 +26,7 @@ diff -rup adminer-4.3.1/adminer/drivers/elastic.inc.php adminer-4.3.1-elasticsea
 +
 +			if (count($parts) === 2) {
 +				$id = trim($parts[1]);
-+				$query = "{$type}/{$id}";
++				$query = "$type/$id";
 +				return $this->_conn->query($query, $record, 'POST');
 +			}
 +
