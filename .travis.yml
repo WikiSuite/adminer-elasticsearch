@@ -1,0 +1,11 @@
+language: php
+php:
+  - '5.4'
+  - '7.1'
+script:
+  - mkdir source
+  - wget $(grep -o 'https://github.com.*' sources.download) -qO source.tar.gz
+  - tar -C source -zxvf source.tar.gz --strip-components=1
+  - patch -d source -p 1 < adminer-4.3.1-elasticsearch54.patch
+  - php source/compile.php
+  - find -name "*.php" -exec php -l {} \;
