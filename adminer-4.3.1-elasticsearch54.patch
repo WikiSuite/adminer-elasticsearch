@@ -1,5 +1,5 @@
 --- adminer-4.3.1/adminer/drivers/elastic.inc.php	2017-11-13 10:00:30.380883318 -0200
-+++ adminer-4.3.1-elasticsearch54/adminer/drivers/elastic.inc.php	2017-11-24 17:14:08.099479846 -0200
++++ adminer-4.3.1-elasticsearch54/adminer/drivers/elastic.inc.php	2017-12-11 11:02:12.397395646 -0200
 @@ -19,7 +19,8 @@ if (isset($_GET["elastic"])) {
  				@ini_set('track_errors', 1); // @ - may be disabled
  				$file = @file_get_contents($this->_url  . '/' . ltrim($path, '/'), false, stream_context_create(array('http' => array(
@@ -83,17 +83,55 @@
  	}
  
  
-@@ -242,7 +293,7 @@ if (isset($_GET["elastic"])) {
+@@ -201,6 +252,8 @@ if (isset($_GET["elastic"])) {
+ 	}
+ 
+ 	function get_databases() {
++		$_GET['dbsize'] = 1;
++
+ 		global $connection;
+ 		$return = $connection->rootQuery('_aliases');
+ 		if ($return) {
+@@ -223,10 +276,17 @@ if (isset($_GET["elastic"])) {
+ 
+ 	function count_tables($databases) {
+ 		global $connection;
+-		$return = $connection->query('_mapping');
+-		if ($return) {
+-			$return = array_map('count', $return);
++		$return = array();
++		$result = $connection->query('_stats');
++
++		if (!(empty($result) || empty($result['indices']))) {
++			$indices = $result['indices'];
++			foreach($indices as $indice => $stats) {
++				$indexing = $stats['total']['indexing'];
++				$return[ $indice ] = $indexing['index_total'];
++			}
+ 		}
++
+ 		return $return;
+ 	}
+ 
+@@ -241,24 +301,28 @@ if (isset($_GET["elastic"])) {
+ 
  	function table_status($name = "", $fast = false) {
  		global $connection;
- 		$search = $connection->query("_search?search_type=count", array(
+-		$search = $connection->query("_search?search_type=count", array(
 -			"facets" => array(
++
++		$search = $connection->query("_search", array(
++			"size" => 0,
 +			"aggregations" => array(
  				"count_by_type" => array(
  					"terms" => array(
- 						"field" => "_type",
-@@ -252,13 +303,14 @@ if (isset($_GET["elastic"])) {
+-						"field" => "_type",
++						"field" => "_type"
+ 					)
+ 				)
+ 			)
  		), "POST");
++
  		$return = array();
  		if ($search) {
 -			foreach ($search["facets"]["count_by_type"]["terms"] as $table) {
@@ -112,7 +150,7 @@
  					return $return[$name];
  				}
  			}
-@@ -336,16 +388,16 @@ if (isset($_GET["elastic"])) {
+@@ -336,16 +400,16 @@ if (isset($_GET["elastic"])) {
  		return null;
  	}
  
@@ -132,7 +170,7 @@
  	* @param array
  	* @return mixed
  	*/
-@@ -354,7 +406,31 @@ if (isset($_GET["elastic"])) {
+@@ -354,7 +418,31 @@ if (isset($_GET["elastic"])) {
  		return $connection->rootQuery(urlencode(implode(',', $databases)), array(), 'DELETE');
  	}
  
@@ -165,7 +203,7 @@
  	* @param array
  	* @return bool
  	*/
-@@ -367,9 +443,26 @@ if (isset($_GET["elastic"])) {
+@@ -367,9 +455,26 @@ if (isset($_GET["elastic"])) {
  		return $return;
  	}
  
