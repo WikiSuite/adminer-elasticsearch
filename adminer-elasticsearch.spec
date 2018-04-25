@@ -1,6 +1,6 @@
 Name:       adminer-elasticsearch
-Version:    4.3.1
-Release:    2%{?dist}
+Version:    4.6.2
+Release:    1%{?dist}
 Summary:    Adminer Elasticsearch
 BuildRoot:  %{_topdir}/BUILD/%{name}-%{version}-%{release}
 BuildArch:  noarch
@@ -11,7 +11,6 @@ Source1:    adminer-elasticsearch.conf
 Source2:    adminer.css
 Source3:    adminer-index.php
 Source4:    adminer-elasticsearch.php
-Patch0:     adminer-4.3.1-elasticsearch54.patch
 Requires:   app-base-core
 Requires:   app-elasticsearch-core
 Requires:   app-elasticsearch-plugin-core
@@ -22,7 +21,6 @@ Adminer configured to connect to local Elasticsearch system.
 
 %prep
 %setup -q -n adminer-%{version}
-%patch0 -p1
 
 %build
 ./compile.php
@@ -52,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/clearos/sandbox/etc/httpd/conf.d/adminer-elasticsearch.conf
 
 %changelog
+* Wed Apr 25 2018 eGloo <developer@egloo.ca> 4.6.2
+- 4.6.2 - previous patch was merged with upstream
+
 * Tue May 23 2017 eGloo <developer@egloo.ca> 4.3.1
 - 4.3.1 with patch for ElasticSearch 5.4
 
