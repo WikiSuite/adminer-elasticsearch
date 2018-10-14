@@ -1,5 +1,5 @@
 Name:       adminer-elasticsearch
-Version:    4.6.2
+Version:    4.6.3
 Release:    1%{?dist}
 Summary:    Adminer Elasticsearch
 BuildRoot:  %{_topdir}/BUILD/%{name}-%{version}-%{release}
@@ -50,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 /usr/clearos/sandbox/etc/httpd/conf.d/adminer-elasticsearch.conf
 
 %changelog
+* San Oct 14 2018 eGloo <developer@egloo.ca> 4.6.3
+- 4.6.3 - update to latest stable Adminer
+
 * Wed Apr 25 2018 eGloo <developer@egloo.ca> 4.6.2
 - 4.6.2 - previous patch was merged with upstream
 
