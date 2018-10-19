@@ -1,0 +1,10 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  OS_RELEASE: '7.5.0'
+
+include:
+  - 'https://gitlab.com/egloo.ca/os-manager/package-builder/raw/os7/clearos-ci-template.yml'
