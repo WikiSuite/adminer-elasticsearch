@@ -50,7 +50,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/clearos/sandbox/etc/httpd/conf.d/adminer-elasticsearch.conf
 
 %changelog
-* San Oct 14 2018 eGloo <developer@egloo.ca> 4.6.3
+* Sun Oct 14 2018 eGloo <developer@egloo.ca> 4.6.3
 - 4.6.3 - update to latest stable Adminer
 
 * Wed Apr 25 2018 eGloo <developer@egloo.ca> 4.6.2
