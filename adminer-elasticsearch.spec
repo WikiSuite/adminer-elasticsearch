@@ -51,7 +51,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Jan 07 2019 eGloo <developer@egloo.ca> 4.7.0
-- 4.6.3 - update to latest stable Adminer
+- 4.7.0 - update to Adminer 4.7.0
 
 * Sun Oct 14 2018 eGloo <developer@egloo.ca> 4.6.3
 - 4.6.3 - update to latest stable Adminer
